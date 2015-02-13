@@ -1,23 +1,25 @@
 <?php
-$username=$_POST['username'];
-$password=$_POST['password'];
-$con=@mysql_connect("localhost","root","") or die(mysql_error());
-$db=@mysql_select_db("hms",$con)or die(mysql_error());
+	require('./../config.php');
+	
+	$username = $_POST['username'];
+	$password = $_POST['password'];
 
-$sql="SELECT * FROM users WHERE username='$username' and password='$password'";
+	$con = @mysql_connect(DB_HOST,DB_USER,DB_PASSWORD) or die(mysql_error());
+	$db = @mysql_select_db(DB_NAME,$con) or die(mysql_error());
 
-$result=mysql_query($sql);
+	$sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
 
-$count=mysql_num_rows($result);
+	$result = mysql_query($sql);
 
-if($count==1){
+	$count = mysql_num_rows($result);
 
-session_register("username");
-session_register("password");
-header("location:login_success.php");
-}
-else {
-echo "Wrong Username or Password";
-}
-ob_end_flush();
+	if($count == 1){
+		$_SESSION['username'] = $username;
+		
+		header("location:login_success.php");
+	} else {
+		echo "Wrong Username or Password";
+	}
+	
+	ob_end_flush();
 ?>
