@@ -32,7 +32,7 @@ $app = new \Slim\Slim();
  * argument for `Slim::get`, `Slim::post`, `Slim::put`, `Slim::patch`, and `Slim::delete`
  * is an anonymous function.
  */
-
+require('./../config.php');
 // GET route
 $app->get("/getUsers","getUsers");
 $app->post("/saveUser","saveUser");
@@ -43,7 +43,7 @@ function getUsers(){
         $stmt = $db->query($sql);
         $wines = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
-        echo '{"wine": ' . json_encode($wines) . '}';
+        echo '{"users": ' . json_encode($wines) . '}';
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
@@ -83,10 +83,10 @@ function saveUser(){
 }
 
 function getConnection() {
-    $dbhost="localhost";
-    $dbuser="root";
-    $dbpass="";
-    $dbname="push";
+    $dbhost=DB_HOST;
+    $dbuser=DB_USER;
+    $dbpass=DB_PASSWORD;
+    $dbname=DB_NAME;
     $dbh = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return $dbh;
@@ -97,7 +97,15 @@ function getConnection() {
 $app->get(
     '/',
     function () {
-        $template = "Welcome to Push API";
+        $template = <<<EOL
+
+        Welcome to Push API <br>
+            <h1> API:GET</h1>
+            <ul>
+                <li><a href="/api/getUsers">/getUsers</a></li>
+
+            </ul>
+EOL;
         echo $template;
     }
 );
